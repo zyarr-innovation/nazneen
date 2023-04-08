@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IUser, ICaseCommunication, ICase, DataService } from '../data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit{
   
   constructor (private router:Router,
     private fb: FormBuilder,
+    private authService: AuthService,
     private dataService: DataService) {
 
   }
@@ -30,7 +32,9 @@ export class DashboardComponent implements OnInit{
   ngOnInit(): void {
     this.caseList = this.dataService.getCaseList();
   }
-
+  isAdminUser () {
+    return this.authService.getLoginUser() == "admin";
+  }
   addCase() {
     let title = this.caseInfo.controls["title"].value;
     let description = this.caseInfo.controls["description"].value;

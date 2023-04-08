@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 
+export enum EnumCommentStatus {
+  user,
+  admin
+}
 export interface IUser {
   id: number;
   name: string
@@ -14,6 +18,8 @@ export interface ICase {
   title: string;
   date: Date;
   description: string;
+  commentStatus: EnumCommentStatus;
+  username: string;
   communication: ICaseCommunication[];
 }
 
@@ -32,6 +38,8 @@ export class DataService {
       title: "My Case 1",
       date: new Date (),
       description: "My inlaws are troubling me a lot",
+      commentStatus : EnumCommentStatus.user,
+      username: "test",
       communication: [{
         date:  new Date (),
         text: "Inlaws are beating me"
@@ -49,6 +57,8 @@ export class DataService {
       title: "My Case 2",
       date: new Date (),
       description: "My husband is very bad",
+      commentStatus : EnumCommentStatus.user,
+      username: "test",
       communication: [{
         date:  new Date (),
         text: "My husband beats me alot, abuses me also."
@@ -66,6 +76,8 @@ export class DataService {
       title: "My Case 3",
       date: new Date (),
       description: "My husband is very bad 3",
+      commentStatus : EnumCommentStatus.user,
+      username: "test",
       communication: [{
         date:  new Date (),
         text: "My husband beats me alot, abuses me also.3"
@@ -83,6 +95,8 @@ export class DataService {
       title: "My Case 4",
       date: new Date (),
       description: "My husband is very bad 4",
+      commentStatus : EnumCommentStatus.user,
+      username: "test",
       communication: [{
         date:  new Date (),
         text: "My husband beats me alot, abuses me also.4"
@@ -95,7 +109,7 @@ export class DataService {
       }]
     });
 
-    this.caseDB["admin"] = tempCase;
+    this.caseDB["test"] = tempCase;
   }
 
   getCaseList (): ICase[] {
@@ -143,6 +157,8 @@ export class DataService {
       title: title,
       date: currentDate,
       description: description,
+      commentStatus : EnumCommentStatus.user,
+      username: username!,
       communication: []
     }
 

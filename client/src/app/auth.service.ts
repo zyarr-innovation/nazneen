@@ -20,6 +20,14 @@ export class AuthService {
       contact_number: "9323053063"
     }
     this.model["admin"] = adminUser;
+
+    let testUser:IUser ={
+      name: "test",
+      password: "admin@123",
+      email: "test@ge.com",
+      contact_number: "9323053063"
+    }
+    this.model["test"] = testUser;
    }
 
   isLoggedIn () {
