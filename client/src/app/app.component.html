@@ -1,0 +1,25 @@
+<mat-toolbar color="primary">
+  <span class="fill-remaining-space">
+    <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="checkUserLogin()">
+      <mat-icon>menu</mat-icon>
+      <mat-icon class="some-space">account_circle</mat-icon>
+      <span class="some-space">{{loginUser}}</span>
+    </button>
+    <mat-menu #menu="matMenu" [overlapTrigger]="false">
+      <button mat-menu-item routerLink="/dashboard">
+        <mat-icon>home</mat-icon>
+        <span>Dashboard</span>
+      </button>
+      <button mat-menu-item routerLink="/contactus">
+        <mat-icon>contact_support</mat-icon>
+        <span>Contact us</span>
+      </button>
+      <button mat-menu-item *ngIf="isLoggedIn" (click)="logoff()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </span>
+  <span class="fill-remaining-space">Nazneen</span>
+</mat-toolbar>
+<router-outlet></router-outlet>

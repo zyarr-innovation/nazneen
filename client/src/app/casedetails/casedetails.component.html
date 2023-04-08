@@ -1,0 +1,41 @@
+<div>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{caseDetail.title}}<span class="display-date" style="margin-left: 10px">( {{caseDetail.date  | date: 'MMMM d, y  h:mm': 'MMMM d, y  h:mm'}})</span></mat-card-title>
+            <mat-card-subtitle>{{caseDetail.description}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <form>
+                <div class="detail-comm" *ngFor="let eachComm of caseDetail.communication">
+                    <input matInput type="text" [disabled]="true" [value]="eachComm.date  | date: 'MMMM d, y  h:mm'">
+                    <textarea matInput [disabled]="true">{{eachComm.text}}</textarea>
+                </div>
+            </form>
+
+            <form [formGroup]="commentForm">
+                <div class="detail-comm" >
+                    <mat-form-field >
+                        <mat-label>{{currentDate  | date: 'MMMM d, y  h:mm'}}</mat-label>
+                        <textarea matInput placeholder="Add Comment" formControlName="comments"></textarea>
+                    </mat-form-field >
+                </div>
+            </form>
+
+        </mat-card-content>
+        <mat-card-actions align="end" class="comm-align">
+            <button mat-raised-button color="accent" (click)="addPhone ()">
+                <mat-icon>phone</mat-icon>
+                Phone Call
+            </button>
+            <button mat-raised-button color="accent" (click)="addWhatsup ()">
+                <mat-icon>question_answer</mat-icon>
+                Whatsup Meet
+            </button>
+            <button mat-raised-button color="warn" (click)="addInpersonMeet ()">
+                <mat-icon>supervised_user_circle</mat-icon>
+                In person meet
+            </button>
+            <button mat-raised-button color="primary" (click)="addComments ()" [disabled]="commentForm.invalid">Add Comments</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

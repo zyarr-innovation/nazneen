@@ -1,0 +1,90 @@
+<div class="box">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <div mat-card-avatar class="login-header-image"></div>
+        <mat-card-title>Nazneen</mat-card-title>
+        <mat-card-subtitle>Helping Women in distress</mat-card-subtitle>
+      </mat-card-header>
+      <div class="center-content" >
+        <img mat-card-image class="main-image" src="../../assets/Nazneen-Images1.jpg" alt="Nazneen Image">
+        <div class="login-content">
+          <div *ngIf="isLoginEnable">
+            <form [formGroup]="loginForm" class="login-form" >
+              <mat-form-field class="login-full-width" >
+                <mat-label>User Name</mat-label>
+                <input matInput type="text" placeholder="User Name" formControlName="username">
+                <div *ngIf="thisLogin.username.touched && thisLogin.username.invalid" class="alert alert-danger">
+                  <div *ngIf="thisLogin.username.errors?.required">Please enter user</div>
+                </div>
+              </mat-form-field>
+            
+              <mat-form-field class="login-full-width">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" placeholder="User Name" formControlName="password">
+                <div *ngIf="thisLogin.password.touched && thisLogin.password.invalid">
+                  <div *ngIf="thisLogin.password.errors?.required">Please enter password</div>
+                </div>
+              </mat-form-field>
+              <button mat-raised-button color="primary" [disabled]="!loginForm.valid" (click)="login()">Login</button>
+              <button mat-raised-button color="accent" (click)="enableRegistration()">Register</button>
+            </form>
+          </div>
+          
+          <div *ngIf="isRegistrationEnable">
+            <form [formGroup]="registerForm" class="login-form" >
+              <mat-form-field class="login-full-width">
+                <mat-label>User Name</mat-label>
+                <input matInput type="text" placeholder="User Name" formControlName="username">
+                <div *ngIf="thisRegister.username.touched && thisRegister.username.invalid">
+                  <div *ngIf="thisRegister.username.errors?.required">Please enter user</div>
+                  <div *ngIf="thisRegister.username.errors?.minlength || thisRegister.username.errors?.maxlength">Username must be 4 to 24 characters</div>
+                </div>
+              </mat-form-field>
+              <mat-form-field class="login-full-width">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" placeholder="Password" formControlName="password">
+                <div *ngIf="thisRegister.password.touched && thisRegister.password.invalid">
+                  <div *ngIf="thisRegister.password.errors?.required">Please enter password</div>
+                  <div *ngIf="thisRegister.password.errors?.minlength || thisRegister.password.errors?.maxlength">Password must be 4 to 24 characters</div>
+                </div>
+              </mat-form-field>
+              <mat-form-field class="login-full-width">
+                <mat-label>Email Id</mat-label>
+                <input matInput type="email" placeholder="Email Id"  formControlName="email">
+                <div *ngIf="thisRegister.email.touched && thisRegister.email.invalid">
+                  <div *ngIf="thisRegister.email.errors?.required">Please enter Email</div>
+                  <div *ngIf="thisRegister.email.errors?.pattern">Enter Valid Email Address</div>
+                </div>
+              </mat-form-field>
+              <mat-form-field class="login-full-width">
+                <mat-label>Contact Number</mat-label>
+                <input matInput type="text" placeholder="Contact Number" formControlName="contact_number"> 
+                <div *ngIf="thisRegister.contact_number.touched && thisRegister.contact_number.invalid">
+                  <div *ngIf="thisRegister.contact_number.errors?.required">Please enter contact number</div>
+                  <div *ngIf="thisRegister.contact_number.errors?.pattern">Enter Valid Contact Number</div>
+                </div>
+              </mat-form-field>
+              <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()">Submit</button>
+              <button mat-raised-button color="accent" (click)="disableRegistration()">Cancel</button>
+            </form>
+          </div>
+        
+        </div>
+      </div>
+      
+      <mat-card-content>
+        <p>
+          Nazneen is a non-government organization setup in 2023 to help women in distriss.
+          Women can  contact the expert doctors, psychologist, dietician, beautician or child expert
+          to discuss their problem.
+          All the problems are safe and private. It is not shared with any organization or government 
+          except when need arises to take help from them.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  

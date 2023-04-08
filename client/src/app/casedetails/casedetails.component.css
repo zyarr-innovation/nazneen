@@ -1,0 +1,12 @@
+.display-date {
+    align-self: flex-end;
+}
+
+.detail-comm {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    margin-left: 10px;
+}

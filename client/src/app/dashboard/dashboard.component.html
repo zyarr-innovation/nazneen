@@ -1,0 +1,21 @@
+<div>
+
+  <h1 align="center">My Case List</h1>
+  <div class="main-div">
+
+    <div *ngFor="let eachCase of caseList; let elemIndex = index;">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{eachCase.title}}</mat-card-title>
+          <mat-card-subtitle>{{eachCase.date  | date: 'MMMM d, y  h:mm'}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          {{eachCase.description}}
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-raised-button color="primary" (click)="onDetail(elemIndex)">Open</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

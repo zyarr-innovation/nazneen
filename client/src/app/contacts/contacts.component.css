@@ -1,0 +1,10 @@
+.detail-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-image {
+    max-width: 200px;
+    max-height: 200px;
+}

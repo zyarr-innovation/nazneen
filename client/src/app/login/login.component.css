@@ -1,0 +1,66 @@
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  mat-card {
+      max-width: 1200px;
+      max-height: 500px;
+  }
+  
+  mat-card-title {
+    font-size: 100px;
+    font-weight: 800;
+  }
+  mat-card-subtitle {
+    font-size: 80px;
+    font-weight: 400;
+  
+  }
+  .login-header-image {
+    background-image: url('../../assets/Nazneen-Images2.jpg');
+    background-size: cover;
+    width: 100px; 
+    height: 100px;
+  }
+  .center-content {
+    display: flex;
+  }
+  
+  .login-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .main-image {
+    width: 60%; 
+    height: 60%;
+  }
+  
+  mat-card-content {
+    font-weight: normal;
+    font-size: 24px;
+    letter-spacing: 1px;
+    word-spacing: 5px;
+    line-height: 40px;
+  }
+  
+  .login-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .login-full-width {
+    width: 100%;
+  }
+  
+  button {
+    margin-right: 8px;
+  }
+
+  .input-error {
+    border: 1px solid #ff0000;
+  }
