@@ -8,3 +8,13 @@ mat-card {
     width: 350px;
     margin: 8px;
 }
+
+.title_info {
+    width: 20%;
+    margin: 5px;
+}
+
+.description_info {
+    width: 60%;
+    margin: 5px;
+}

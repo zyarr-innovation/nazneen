@@ -12,7 +12,15 @@ export interface IUser {
 })
 export class AuthService {
   model: { [username: string]: IUser} = {};
-  constructor() { }
+  constructor() {
+    let adminUser:IUser ={
+      name: "admin",
+      password: "admin@123",
+      email: "admin@ge.com",
+      contact_number: "9323053063"
+    }
+    this.model["admin"] = adminUser;
+   }
 
   isLoggedIn () {
     return localStorage.getItem('isLoggedIn') == "true";

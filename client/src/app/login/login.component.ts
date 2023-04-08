@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
   isRegistrationEnable = true;
   returnUrl = "dashboard";
   returnLogin = "login"
-  message = "";
+  errorMessage = "";
 
   loginForm: FormGroup = this.fb.group({
     username: [null, [Validators.required]],
@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
     email: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
     contact_number: [null, [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]]
   });
+  
   get thisLogin(){
     return this.loginForm.controls;
   }
@@ -58,6 +59,7 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    this.errorMessage = "";
     if (this.loginForm.invalid) {
       return;
     } else {
@@ -67,12 +69,13 @@ export class LoginComponent implements OnInit {
         this.router.navigate([this.returnUrl]);
       }
       else {
-        this.message = "Please check your userid and password";
+        this.errorMessage = "Either username and password is incorrect, or user is not registered";
       }
     }
   }
 
   register() {
+    this.errorMessage =""
     if (this.registerForm.invalid) {
       return;
     } else {
@@ -84,7 +87,7 @@ export class LoginComponent implements OnInit {
         this.disableRegistration();
       }
       else {
-        this.message = "Please check your userid and password";
+        this.errorMessage = "User already exist";
       }
     }
   }

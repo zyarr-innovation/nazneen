@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
 
 export interface IUser {
-  id: Date;
-  name: string;
+  id: number;
+  name: string
 }
 export interface ICaseCommunication {
   date: Date;
@@ -21,10 +22,12 @@ export interface ICase {
 })
 export class DataService {
 
-  caseList: ICase[] = [];
-  constructor() { 
+  caseDB: {[username: string]: ICase[]} ={};
+  constructor(private authService: AuthService,) { 
     
-    this.caseList.push({
+    //=================================
+    let tempCase: ICase[] = [];
+    tempCase.push({
       id: 1,
       title: "My Case 1",
       date: new Date (),
@@ -41,7 +44,7 @@ export class DataService {
       }]
     });
 
-    this.caseList.push({
+    tempCase.push({
       id: 2,
       title: "My Case 2",
       date: new Date (),
@@ -58,7 +61,7 @@ export class DataService {
       }]
     });
 
-    this.caseList.push({
+    tempCase.push({
       id: 3,
       title: "My Case 3",
       date: new Date (),
@@ -75,7 +78,7 @@ export class DataService {
       }]
     });
 
-    this.caseList.push({
+    tempCase.push({
       id: 4,
       title: "My Case 4",
       date: new Date (),
@@ -91,27 +94,52 @@ export class DataService {
         text: "He kicks me, hit me sometimes throws me out of the house. 4"
       }]
     });
+
+    this.caseDB["admin"] = tempCase;
   }
 
-  getCaseList () {
-    return this.caseList;
+  getCaseList (): ICase[] {
+    let username = this.authService.getLoginUser();
+    return this.caseDB[username!];
   }
 
-  getCase(index: number) {
-    return this.caseList[index];
+  getCase(caseIndex: number): ICase  {
+    let username = this.authService.getLoginUser();
+    return this.caseDB[username!][caseIndex];
   }
 
-  addCaseComm (index: number,
-    currentDate: Date,
+  addCaseComm (caseIndex: number,
     comment: string
-    ) {
+    ) : ICase  {
       let comm: ICaseCommunication = {
-        date:  currentDate,
+        date:  new Date(),
         text: comment
       };
 
-      let eachCase: ICase = this.caseList[index];      
+      let username = this.authService.getLoginUser();
+      let eachCase: ICase = this.caseDB[username!][caseIndex];     
       eachCase.communication.push(comm);
       return eachCase;
+  }
+
+  addCase (
+    title: string,
+    description: string
+  ) {
+
+    let username = this.authService.getLoginUser();
+    let lastIndex = this.caseDB[username!].length;
+    let currentDate = new Date();
+
+    let newCase: ICase = {
+      id: lastIndex,
+      title: title,
+      date: currentDate,
+      description: description,
+      communication: []
     }
+
+    this.caseDB[username!].push (newCase);
+    return lastIndex;
+  }
 }

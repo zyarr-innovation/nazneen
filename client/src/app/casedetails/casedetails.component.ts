@@ -14,6 +14,7 @@ export class CasedetailsComponent implements OnInit {
 
   index = 0;
   caseDetail: ICase;
+  dashboarUrl = "/dashboard";
 
   currentDate = new Date();
   comment = "";
@@ -40,28 +41,31 @@ export class CasedetailsComponent implements OnInit {
 
   addComments () {
     let comments = this.commentForm.controls["comments"].value;
-    this.caseDetail = this.dataService.addCaseComm(this.index, new Date(), comments);
+    this.caseDetail = this.dataService.addCaseComm(this.index, comments);
     this.commentForm.reset();
   }
   addPhone () {
     let user = this.authService.getLoginUser();
     let comments = `Added a meeting with Nazneen expert on your phone with number ${user} within one hour today.`;
-    this.caseDetail = this.dataService.addCaseComm(this.index, new Date(), comments);
+    this.caseDetail = this.dataService.addCaseComm(this.index, comments);
     this.commentForm.reset();
   }
 
   addWhatsup() {
     let user = this.authService.getLoginUser();
     let comments = `Added a meeting with Nazneen export on your whatsup number ${user} within one hour today.`;
-    this.caseDetail = this.dataService.addCaseComm(this.index, new Date(), comments);
+    this.caseDetail = this.dataService.addCaseComm(this.index, comments);
     this.commentForm.reset();
   }
 
   addInpersonMeet() {
     let user = this.authService.getLoginUser();
     let comments = `You have requested for in-person meeting with Nazneen expert. Please call on toll free number 1800 800 800 from your registered mobile number ${user} and confirm the meeting venue and time.`;
-    this.caseDetail = this.dataService.addCaseComm(this.index, new Date(), comments);
+    this.caseDetail = this.dataService.addCaseComm(this.index, comments);
     this.commentForm.reset();
   }
   
+  doCancel () {
+    this.router.navigate([this.dashboarUrl]);
+  }
 }

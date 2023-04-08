@@ -25,6 +25,9 @@
                   <div *ngIf="thisLogin.password.errors?.required">Please enter password</div>
                 </div>
               </mat-form-field>
+              <div *ngIf="errorMessage">
+                <div>{{errorMessage}}</div>
+              </div>
               <button mat-raised-button color="primary" [disabled]="!loginForm.valid" (click)="login()">Login</button>
               <button mat-raised-button color="accent" (click)="enableRegistration()">Register</button>
             </form>
@@ -64,6 +67,9 @@
                   <div *ngIf="thisRegister.contact_number.errors?.pattern">Enter Valid Contact Number</div>
                 </div>
               </mat-form-field>
+              <div *ngIf="errorMessage">
+                <div>{{errorMessage}}</div>
+              </div>
               <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()">Submit</button>
               <button mat-raised-button color="accent" (click)="disableRegistration()">Cancel</button>
             </form>
