@@ -128,7 +128,14 @@ export class DataService {
   ) {
 
     let username = this.authService.getLoginUser();
-    let lastIndex = this.caseDB[username!].length;
+    let lastIndex = 0;
+    if (!this.caseDB[username!]){
+      lastIndex = 0 
+      this.caseDB[username!] = [];
+    } else {
+      lastIndex = this.caseDB[username!].length;
+    }
+    
     let currentDate = new Date();
 
     let newCase: ICase = {
