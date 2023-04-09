@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IUser, ICaseComment, ICase, DataService, EnumCommentStatus } from '../data.service';
+import { IUser, ICaseComment, ICase, EnumCommentStatus } from '../data.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,7 +31,8 @@ export class DashboardComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.caseList = this.dataService.getCaseList();
+    this.dataService.getCaseList().
+      subscribe (data => this.caseList = data);
   }
   isAdminUser () {
     return this.authService.getLoginUser() == "admin";
@@ -50,8 +52,9 @@ export class DashboardComponent implements OnInit{
   addCase() {
     let title = this.caseInfo.controls["title"].value;
     let description = this.caseInfo.controls["description"].value;
-    let caseInfo = this.dataService.addCase(title, description);
-    this.router.navigate([this.caseDetailUrl, caseInfo.id]);
+    this.dataService.addCase(title, description).subscribe (
+      data => this.router.navigate([this.caseDetailUrl, data.id])
+    )
   }
 
   onDetail(elemIndex: number) {

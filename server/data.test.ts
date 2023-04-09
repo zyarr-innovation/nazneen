@@ -1,7 +1,6 @@
-import { EnumCommentStatus, ICase, ICaseComment } from "./data.model";
-
+import { EnumCommentStatus, ICase, ICaseComment } from './data.model';
 export class TestData {
-    private commentList: ICaseComment[] = [
+    private static commentList: ICaseComment[] = [
         {
             id: 1,
             caseId: 1,
@@ -80,7 +79,7 @@ export class TestData {
         }
     ];
 
-    private caseList: ICase[] =
+    private static caseList: ICase[] =
         [{
             id: 1,
             title: "My Case 1",
@@ -119,100 +118,123 @@ export class TestData {
         }
         ];
 
-    private getAdminCaseList (): ICase[] {
-        let adminCaseList: ICase[]= [];
-        let caseList = this.caseList.filter(eachCase => 
+    private static getAdminCaseList (): ICase[] | null {
+        let adminCaseList: ICase[] | null = null;
+        let caseList = TestData.caseList.filter(eachCase => 
             eachCase.commentStatus == EnumCommentStatus.request);
         if (caseList){
-            adminCaseList.push(...caseList);
-        }
-
-        caseList = this.caseList.filter(eachCase => 
-            eachCase.commentStatus == EnumCommentStatus.response);
-        if (caseList){
-            adminCaseList.push(...caseList);
-        }
-
-        for(let eachCase of adminCaseList) {
-            let commentList = this.commentList.filter (eachComment => eachComment.caseId == eachCase.id)
-            if (commentList) {
-                eachCase.communication = commentList;
+            if (!adminCaseList) {
+                adminCaseList = caseList;
             }
         }
-        return adminCaseList;
 
+        caseList = TestData.caseList.filter(eachCase => 
+            eachCase.commentStatus == EnumCommentStatus.response);
+        if (caseList){
+            if (!adminCaseList) {
+                adminCaseList = caseList;
+            } else {
+                adminCaseList.push(...caseList);
+            }
+        }
+
+        if (adminCaseList) {
+            for(let eachCase of adminCaseList) {
+                let commentList = TestData.commentList.filter (eachComment => eachComment.caseId == eachCase.id)
+                if (commentList) {
+                    eachCase.communication = commentList;
+                }
+            }
+        }
+
+        return adminCaseList;
     }
 
-    private getUserCaseList (username: string): ICase[] {
-        let userCaseList: ICase[]= [];
-        let caseList = this.caseList.filter(eachCase => 
+    private static getUserCaseList (username: string): ICase[] | null {
+        let userCaseList: ICase[] | null = null;
+        let caseList = TestData.caseList.filter(eachCase => 
             eachCase.commentStatus == EnumCommentStatus.response &&
             eachCase.username == username);
         if (caseList){
-            userCaseList.push(...caseList);
+            if (!userCaseList) {
+                userCaseList = caseList;
+            }
         }
 
-        caseList = this.caseList.filter(eachCase => 
+        caseList = TestData.caseList.filter(eachCase => 
             eachCase.commentStatus == EnumCommentStatus.request &&
             eachCase.username == username);
         if (caseList){
-            userCaseList.push(...caseList);
-        }
-
-        for(let eachCase of userCaseList) {
-            let commentList = this.commentList.filter (eachComment => eachComment.caseId == eachCase.id)
-            if (commentList) {
-                eachCase.communication = commentList;
+            if (!userCaseList) {
+                userCaseList = caseList;
+            } else {
+                userCaseList.push(...caseList);
             }
         }
-        return userCaseList;
 
+        if (userCaseList) {
+            for(let eachCase of userCaseList) {
+                let commentList = TestData.commentList.filter (eachComment => eachComment.caseId == eachCase.id)
+                if (commentList) {
+                    eachCase.communication = commentList;
+                }
+            }
+        }
+        
+        return userCaseList;
     }
 
-    getCaseList (username: string): ICase[]  {
+    static getCaseList (username: string): ICase[]  | null{
         if (username.toLowerCase() == 'admin') {
-            return this.getAdminCaseList();
+            return TestData.getAdminCaseList();
         } else {
-            return this.getUserCaseList(username);
+            return TestData.getUserCaseList(username);
         }
     }
 
-    getCaseDetail (caseId: number): ICase | null {
-        let caseInfo = this.caseList.find (eachCase => eachCase.id == caseId);
+    static getCaseDetail (caseId: number): ICase | null {
+        let caseInfo = TestData.caseList.find (eachCase => eachCase.id == caseId);
         if (caseInfo) {
-            let caseComm = this.commentList.filter (eachComm=> eachComm.caseId == caseId);
+            let caseComm = TestData.commentList.filter (eachComm=> eachComm.caseId == caseId);
             caseInfo.communication = caseComm;
             return caseInfo;
         }
         return null;
     }
 
-    addCase (username: string, caseInfo: ICase):ICase  {
+    static addCase (username: string, caseInfo: ICase):ICase | null {
         if (username != 'admin') {
-            caseInfo.id = this.caseList.length;
+            caseInfo.id = TestData.caseList.length;
             caseInfo.username = username;
             caseInfo.communication = [];
-            this.caseList.push(caseInfo);
+            //Save the case in database
+            TestData.caseList.push(caseInfo);
+            return caseInfo;
         }else {
-            console.log ("Admin cannot log case");
+            return null;
         }
-        return caseInfo;
     }
 
-    addComment (username: string, 
-        caseInfo: ICase,
-        caseComment: ICaseComment): ICase  {
-        caseComment.id = this.commentList.length;
-        caseComment.caseId = caseInfo.id;
-        if (username == 'admin') {
-            caseInfo.commentStatus = EnumCommentStatus.response;
-        } else {
-            caseInfo.commentStatus = EnumCommentStatus.request;
+    static addComment (username: string, 
+        caseComment: ICaseComment): ICase | null {
+        caseComment.id = TestData.commentList.length;
+        caseComment.username = username;
+
+        let caseInfo = TestData.caseList.find(eachCase => eachCase.id == caseComment.caseId);
+        if (caseInfo) {
+            if (username == 'admin') {
+                caseInfo.commentStatus = EnumCommentStatus.response;
+            } else {
+                caseInfo.commentStatus = EnumCommentStatus.request;
+            }
+            //Update the case in database
+            //Save the comment in database
+            caseInfo.communication?.push(caseComment);
+            TestData.commentList.push(caseComment);
+
+            return caseInfo;
+        } else  {
+            return null;
         }
-        caseComment.username = username,
-        caseInfo.communication?.push(caseComment);
-        this.commentList.push(caseComment);
-      
-        return caseInfo;
     }
 }

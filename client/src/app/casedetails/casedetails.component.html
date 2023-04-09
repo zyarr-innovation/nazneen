@@ -1,5 +1,5 @@
 <div>
-    <mat-card>
+    <mat-card *ngIf="caseDetail">
         <mat-card-header>
             <mat-card-title>{{caseDetail.title}}<span class="display-date" style="margin-left: 10px">( {{caseDetail.date  | date: 'MMMM d, y  h:mm': 'MMMM d, y  h:mm'}})</span></mat-card-title>
             <mat-card-subtitle>{{caseDetail.description}}</mat-card-subtitle>

@@ -1,55 +1,38 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { TestData } from './data.test';
+import { EnumCommentStatus, ICase, ICaseComment } from './data.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable} from 'rxjs';
 
-export enum EnumCommentStatus {
-  new,
-  request,
-  response,
-  close
-}
-export interface IUser {
-  id: number;
-  name: string
-}
-export interface ICaseComment {
-  id: number;
-  caseId: number;
-  date: Date;
-  username: string;
-  text: string;
-}
-export interface ICase {
-  id: number
-  title: string;
-  date: Date;
-  description: string;
-  commentStatus: EnumCommentStatus;
-  username: string;
-  communication?: ICaseComment[];
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  caseListUrl = 'http://localhost:8000/caselist'; //:username
+  caseDetailUrl = 'http://localhost:8000/casedetail'; ///:caseId
+  addCaseUrl = 'http://localhost:8000/addcase';
+  addCommentUrl = 'http://localhost:8000/addcomment';
+
   caseDB:TestData = new TestData();
-  constructor(private authService: AuthService,) { 
+  constructor(private httpClient: HttpClient,
+    private authService: AuthService,) { 
   }
 
-  getCaseList (): ICase[] {
+  getCaseList (): Observable <ICase[]> {
     let username = this.authService.getLoginUser();
-    return this.caseDB.getCaseList(username!);
+    return this.httpClient.get<ICase[]>(this.caseListUrl + `/${username}`);
   }
 
-  getCase(caseId: number): ICase| null  {
+  getCase(caseId: number): Observable <ICase>  {
     let username = this.authService.getLoginUser();
-    return this.caseDB.getCaseDetail(caseId);
+    return this.httpClient.get<ICase>(this.caseDetailUrl + `/${caseId}`);
   }
 
-  addCaseComm (caseInfo: ICase,
+  addComment (caseInfo: ICase,
     commentText: string
-    ) : ICase  {
+    ) : Observable <ICase>  {
 
       let username = this.authService.getLoginUser();
       let comment: ICaseComment = {
@@ -60,14 +43,13 @@ export class DataService {
         text: commentText
       };
 
-      let eachCase: ICase = this.caseDB.addComment(username!, caseInfo, comment);     
-      return eachCase;
+      return this.httpClient.post<ICase>(this.addCommentUrl, comment);
   }
 
   addCase (
     title: string,
     description: string
-  ): ICase {
+  ): Observable <ICase> {
 
     let username = this.authService.getLoginUser();
     let currentDate = new Date();
@@ -81,8 +63,6 @@ export class DataService {
       username: username!,
       communication: []
     }
-
-    let caseInfo = this.caseDB.addCase(username!, newCase);
-    return caseInfo;
+    return this.httpClient.post<ICase>(this.addCaseUrl, newCase);
   }
 }
