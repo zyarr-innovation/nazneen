@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IUser, ICaseCommunication, ICase, DataService } from '../data.service';
+import { IUser, ICaseComment, ICase, DataService, EnumCommentStatus } from '../data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 
@@ -35,11 +35,23 @@ export class DashboardComponent implements OnInit{
   isAdminUser () {
     return this.authService.getLoginUser() == "admin";
   }
+
+  //[style.background]="someFunction()"
+  //[ngStyle]="{'background-color': (eachCase.commentStatus == 2) ? '#ffe0cc' : }"
+  getBackgroundColor (caseInfo: ICase) {
+    let retStatus = "";
+    if (caseInfo.commentStatus == EnumCommentStatus.request){
+      retStatus = "#ffffcc";
+    } else if (caseInfo.commentStatus == EnumCommentStatus.response){
+      retStatus = "#ffe0cc";
+    }
+    return retStatus;
+  }
   addCase() {
     let title = this.caseInfo.controls["title"].value;
     let description = this.caseInfo.controls["description"].value;
-    let lastIndex = this.dataService.addCase(title, description);
-    this.router.navigate([this.caseDetailUrl, lastIndex]);
+    let caseInfo = this.dataService.addCase(title, description);
+    this.router.navigate([this.caseDetailUrl, caseInfo.id]);
   }
 
   onDetail(elemIndex: number) {

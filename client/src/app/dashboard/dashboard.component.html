@@ -20,9 +20,8 @@
   </form>
 
   <div class="main-div">
-
     <div *ngFor="let eachCase of caseList; let elemIndex = index;">
-      <mat-card>
+      <mat-card [style.background]="getBackgroundColor(eachCase)">
         <mat-card-header>
           <mat-card-title>{{eachCase.title}}</mat-card-title>
           <mat-card-subtitle>{{eachCase.date  | date: 'MMMM d, y  h:mm'}}</mat-card-subtitle>
@@ -31,7 +30,7 @@
           {{eachCase.description}}
         </mat-card-content>
         <mat-card-actions align="end">
-          <button mat-raised-button color="primary" (click)="onDetail(elemIndex)">Open</button>
+          <button mat-raised-button color="primary" (click)="onDetail(eachCase.id)">Open</button>
         </mat-card-actions>
       </mat-card>
     </div>

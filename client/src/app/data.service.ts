@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
+import { TestData } from './data.test';
 
 export enum EnumCommentStatus {
-  user,
-  admin
+  new,
+  request,
+  response,
+  close
 }
 export interface IUser {
   id: number;
   name: string
 }
-export interface ICaseCommunication {
+export interface ICaseComment {
+  id: number;
+  caseId: number;
   date: Date;
+  username: string;
   text: string;
 }
 export interface ICase {
@@ -20,149 +26,63 @@ export interface ICase {
   description: string;
   commentStatus: EnumCommentStatus;
   username: string;
-  communication: ICaseCommunication[];
+  communication?: ICaseComment[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-
-  caseDB: {[username: string]: ICase[]} ={};
+  caseDB:TestData = new TestData();
   constructor(private authService: AuthService,) { 
-    
-    //=================================
-    let tempCase: ICase[] = [];
-    tempCase.push({
-      id: 1,
-      title: "My Case 1",
-      date: new Date (),
-      description: "My inlaws are troubling me a lot",
-      commentStatus : EnumCommentStatus.user,
-      username: "test",
-      communication: [{
-        date:  new Date (),
-        text: "Inlaws are beating me"
-      },{
-        date:  new Date (),
-        text: "What else they are doing"
-      },{
-        date:  new Date (),
-        text: "They are not allowing me to sleep also."
-      }]
-    });
-
-    tempCase.push({
-      id: 2,
-      title: "My Case 2",
-      date: new Date (),
-      description: "My husband is very bad",
-      commentStatus : EnumCommentStatus.user,
-      username: "test",
-      communication: [{
-        date:  new Date (),
-        text: "My husband beats me alot, abuses me also."
-      },{
-        date:  new Date (),
-        text: "How he troubles you"
-      },{
-        date:  new Date (),
-        text: "He kicks me, hit me sometimes throws me out of the house."
-      }]
-    });
-
-    tempCase.push({
-      id: 3,
-      title: "My Case 3",
-      date: new Date (),
-      description: "My husband is very bad 3",
-      commentStatus : EnumCommentStatus.user,
-      username: "test",
-      communication: [{
-        date:  new Date (),
-        text: "My husband beats me alot, abuses me also.3"
-      },{
-        date:  new Date (),
-        text: "How he troubles you 3"
-      },{
-        date:  new Date (),
-        text: "He kicks me, hit me sometimes throws me out of the house. 3"
-      }]
-    });
-
-    tempCase.push({
-      id: 4,
-      title: "My Case 4",
-      date: new Date (),
-      description: "My husband is very bad 4",
-      commentStatus : EnumCommentStatus.user,
-      username: "test",
-      communication: [{
-        date:  new Date (),
-        text: "My husband beats me alot, abuses me also.4"
-      },{
-        date:  new Date (),
-        text: "How he troubles you 4"
-      },{
-        date:  new Date (),
-        text: "He kicks me, hit me sometimes throws me out of the house. 4"
-      }]
-    });
-
-    this.caseDB["test"] = tempCase;
   }
 
   getCaseList (): ICase[] {
     let username = this.authService.getLoginUser();
-    return this.caseDB[username!];
+    return this.caseDB.getCaseList(username!);
   }
 
-  getCase(caseIndex: number): ICase  {
+  getCase(caseId: number): ICase| null  {
     let username = this.authService.getLoginUser();
-    return this.caseDB[username!][caseIndex];
+    return this.caseDB.getCaseDetail(caseId);
   }
 
-  addCaseComm (caseIndex: number,
-    comment: string
+  addCaseComm (caseInfo: ICase,
+    commentText: string
     ) : ICase  {
-      let comm: ICaseCommunication = {
-        date:  new Date(),
-        text: comment
-      };
 
       let username = this.authService.getLoginUser();
-      let eachCase: ICase = this.caseDB[username!][caseIndex];     
-      eachCase.communication.push(comm);
+      let comment: ICaseComment = {
+        id: 0,
+        caseId: caseInfo.id,
+        username: username!,
+        date:  new Date(),
+        text: commentText
+      };
+
+      let eachCase: ICase = this.caseDB.addComment(username!, caseInfo, comment);     
       return eachCase;
   }
 
   addCase (
     title: string,
     description: string
-  ) {
+  ): ICase {
 
     let username = this.authService.getLoginUser();
-    let lastIndex = 0;
-    if (!this.caseDB[username!]){
-      lastIndex = 0 
-      this.caseDB[username!] = [];
-    } else {
-      lastIndex = this.caseDB[username!].length;
-    }
-    
     let currentDate = new Date();
 
     let newCase: ICase = {
-      id: lastIndex,
+      id: 0,
       title: title,
       date: currentDate,
       description: description,
-      commentStatus : EnumCommentStatus.user,
+      commentStatus : EnumCommentStatus.new,
       username: username!,
       communication: []
     }
 
-    this.caseDB[username!].push (newCase);
-    return lastIndex;
+    let caseInfo = this.caseDB.addCase(username!, newCase);
+    return caseInfo;
   }
 }

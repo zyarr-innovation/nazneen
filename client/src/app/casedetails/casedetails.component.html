@@ -6,8 +6,9 @@
         </mat-card-header>
         <mat-card-content>
             <form>
-                <div class="detail-comm" *ngFor="let eachComm of caseDetail.communication">
-                    <input matInput type="text" [disabled]="true" [value]="eachComm.date  | date: 'MMMM d, y  h:mm'">
+                <div class="detail-comm" *ngFor="let eachComm of caseDetail.communication"
+                    [ngStyle]="{'background-color': (eachComm.username=='admin') ? '#ffe0cc' : '#ffffcc'}">
+                    <mat-label>{{eachComm.username}} <span style="float: right;">{{eachComm.date  | date: 'MMMM d, y  h:mm'}}</span></mat-label>
                     <textarea matInput [disabled]="true">{{eachComm.text}}</textarea>
                 </div>
             </form>
@@ -15,7 +16,7 @@
             <form [formGroup]="commentForm">
                 <div class="detail-comm" >
                     <mat-form-field >
-                        <mat-label>{{currentDate  | date: 'MMMM d, y  h:mm'}}</mat-label>
+                        <mat-label>{{username}} <span style="float: right;">{{currentDate  | date: 'MMMM d, y  h:mm'}}</span></mat-label>
                         <textarea matInput placeholder="Add Comment" formControlName="comments"></textarea>
                     </mat-form-field >
                 </div>
