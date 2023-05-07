@@ -20,40 +20,40 @@ export class CasedetailsComponent implements OnInit {
   comment = "";
   username = "";
   commentForm: FormGroup = this.fb.group({
-    comments: ["",  [Validators.required, Validators.minLength(3)]]
+    comments: ["", [Validators.required, Validators.minLength(3)]]
   });
 
   constructor(private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
     private dataService: DataService,
-    private activatedroute:ActivatedRoute) {
-     
+    private activatedroute: ActivatedRoute) {
+
   }
 
   ngOnInit(): void {
-    this.username = this.authService.getLoginUser()?? "";
+    this.username = this.authService.getLoginUser() ?? "";
 
-      let caseId = this.activatedroute.snapshot.paramMap.get("index");
-      if (caseId) {
-        this.dataService.getCase(+caseId).subscribe (
-          data => this.caseDetail = data
-        );
-      }
+    let case_id = this.activatedroute.snapshot.paramMap.get("index");
+    if (case_id) {
+      this.dataService.getCase(+case_id).subscribe(
+        data => this.caseDetail = data
+      );
+    }
   }
 
-  addComments () {
+  addComments() {
     let comments = this.commentForm.controls["comments"].value;
-    this.dataService.addComment(this.caseDetail!, comments).subscribe (
+    this.dataService.addComment(this.caseDetail!, comments).subscribe(
       data => this.caseDetail = data
     );
     this.commentForm.reset();
   }
-  
-  addPhone () {
+
+  addPhone() {
     let user = this.authService.getLoginUser();
     let comments = `Added a meeting with Nazneen expert on your phone with number ${user} within one hour today.`;
-    this.dataService.addComment(this.caseDetail!, comments).subscribe (
+    this.dataService.addComment(this.caseDetail!, comments).subscribe(
       data => this.caseDetail = data
     );
     this.commentForm.reset();
@@ -62,7 +62,7 @@ export class CasedetailsComponent implements OnInit {
   addWhatsup() {
     let user = this.authService.getLoginUser();
     let comments = `Added a meeting with Nazneen export on your whatsup number ${user} within one hour today.`;
-    this.dataService.addComment(this.caseDetail!, comments).subscribe (
+    this.dataService.addComment(this.caseDetail!, comments).subscribe(
       data => this.caseDetail = data
     );
     this.commentForm.reset();
@@ -71,13 +71,13 @@ export class CasedetailsComponent implements OnInit {
   addInpersonMeet() {
     let user = this.authService.getLoginUser();
     let comments = `You have requested for in-person meeting with Nazneen expert. Please call on toll free number 1800 800 800 from your registered mobile number ${user} and confirm the meeting venue and time.`;
-    this.dataService.addComment(this.caseDetail!, comments).subscribe (
+    this.dataService.addComment(this.caseDetail!, comments).subscribe(
       data => this.caseDetail = data
     );
     this.commentForm.reset();
   }
-  
-  doCancel () {
+
+  doCancel() {
     this.router.navigate([this.dashboarUrl]);
   }
 }

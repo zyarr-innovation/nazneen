@@ -4,55 +4,56 @@ import { IUser, ICaseComment, ICase, EnumCommentStatus } from '../data.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { DataService } from '../data.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit {
 
-  caseList: ICase[] = [];
+  caseList$: Observable<ICase[]> = of([]);
   caseDetailUrl = "casedetail";
 
   caseInfo: FormGroup = this.fb.group({
-    title: ["",  [Validators.required, Validators.minLength(5)]],
-    description: ["",  [Validators.required, Validators.minLength(5)]]
+    title: ["", [Validators.required, Validators.minLength(5)]],
+    description: ["", [Validators.required, Validators.minLength(5)]]
   });
-  
-  constructor (private router:Router,
+
+  constructor(private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
     private dataService: DataService) {
 
   }
-  get thisCaseInfo(){
+  get thisCaseInfo() {
     return this.caseInfo.controls;
   }
 
   ngOnInit(): void {
-    this.dataService.getCaseList().
-      subscribe (data => this.caseList = data);
+    this.caseList$ = this.dataService.getCaseList()
   }
-  isAdminUser () {
+  isAdminUser() {
     return this.authService.getLoginUser() == "admin";
   }
 
   //[style.background]="someFunction()"
-  //[ngStyle]="{'background-color': (eachCase.commentStatus == 2) ? '#ffe0cc' : }"
-  getBackgroundColor (caseInfo: ICase) {
+  //[ngStyle]="{'background-color': (eachCase.comment_status == 2) ? '#ffe0cc' : }"
+  getBackgroundColor(caseInfo: ICase) {
     let retStatus = "";
-    if (caseInfo.commentStatus == EnumCommentStatus.request){
+    if (caseInfo.comment_status == EnumCommentStatus.request) {
       retStatus = "#ffffcc";
-    } else if (caseInfo.commentStatus == EnumCommentStatus.response){
+    } else if (caseInfo.comment_status == EnumCommentStatus.response) {
       retStatus = "#ffe0cc";
     }
     return retStatus;
   }
+
   addCase() {
     let title = this.caseInfo.controls["title"].value;
     let description = this.caseInfo.controls["description"].value;
-    this.dataService.addCase(title, description).subscribe (
+    this.dataService.addCase(title, description).subscribe(
       data => this.router.navigate([this.caseDetailUrl, data.id])
     )
   }

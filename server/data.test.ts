@@ -1,136 +1,41 @@
-import { EnumCommentStatus, ICase, ICaseComment } from './data.model';
+import { NazneenDB, dbData } from './data.dto';
+import { Enumcomment_status, ICase, ICaseComment } from './data.model';
 export class TestData {
-    private static commentList: ICaseComment[] = [
-        {
-            id: 1,
-            caseId: 1,
-            date: new Date(),
-            username: "test",
-            text: "Inlaws are beating me"
-        }, {
-            id: 2,
-            caseId: 1,
-            date: new Date(),
-            username: "test",
-            text: "What else they are doing"
-        }, {
-            id: 3,
-            caseId: 1,
-            date: new Date(),
-            username: "test",
-            text: "They are not allowing me to sleep also."
-        },
-        {
-            id: 4,
-            caseId: 2,
-            date: new Date(),
-            username: "test",
-            text: "My husband beats me alot, abuses me also."
-        }, {
-            id: 5,
-            caseId: 2,
-            date: new Date(),
-            username: "test",
-            text: "How he troubles you"
-        }, {
-            id: 6,
-            caseId: 2,
-            date: new Date(),
-            username: "test",
-            text: "He kicks me, hit me sometimes throws me out of the house."
-        },
-        {
-            id: 7,
-            caseId: 3,
-            date: new Date(),
-            username: "test",
-            text: "My husband beats me alot, abuses me also.3"
-        }, {
-            id: 8,
-            caseId: 3,
-            date: new Date(),
-            username: "test",
-            text: "How he troubles you 3"
-        }, {
-            id: 9,
-            caseId: 3,
-            date: new Date(),
-            username: "test",
-            text: "He kicks me, hit me sometimes throws me out of the house. 3"
-        },
-        {
-            id: 10,
-            caseId: 4,
-            date: new Date(),
-            username: "test",
-            text: "My husband beats me alot, abuses me also.4"
-        }, {
-            id: 11,
-            caseId: 4,
-            date: new Date(),
-            username: "test",
-            text: "How he troubles you 4"
-        }, {
-            id: 12,
-            caseId: 4,
-            date: new Date(),
-            username: "test",
-            text: "He kicks me, hit me sometimes throws me out of the house. 4"
-        }
-    ];
 
-    private static caseList: ICase[] =
-        [{
-            id: 1,
-            title: "My Case 1",
-            date: new Date(),
-            description: "My inlaws are troubling me a lot",
-            commentStatus: EnumCommentStatus.request,
-            username: "test",
-            communication: []
-        },
-        {
-            id: 2,
-            title: "My Case 2",
-            date: new Date(),
-            description: "My husband is very bad",
-            commentStatus: EnumCommentStatus.request,
-            username: "test",
-            communication: []
-        },
-        {
-            id: 3,
-            title: "My Case 3",
-            date: new Date(),
-            description: "My husband is very bad 3",
-            commentStatus: EnumCommentStatus.request,
-            username: "test",
-            communication: []
-        },
-        {
-            id: 4,
-            title: "My Case 4",
-            date: new Date(),
-            description: "My husband is very bad 4",
-            commentStatus: EnumCommentStatus.request,
-            username: "test",
-            communication: []
-        }
-        ];
+    private static nazneenDB: NazneenDB;
 
-    private static getAdminCaseList (): ICase[] | null {
+    private static isInitialize = false;
+    private static commentList: ICaseComment[] = [];
+    private static caseList: ICase[] = [];
+
+    static async initialize() {
+        TestData.nazneenDB = new NazneenDB();
+        let caseList = await TestData.nazneenDB.getCaseList();
+        TestData.caseList.push(...caseList);
+
+        let commentList = await TestData.nazneenDB.getCommentList();
+        TestData.commentList.push(...commentList);
+        TestData.isInitialize = true;
+    }
+
+    private static async getAdminCaseList(): Promise<ICase[] | null> {
+
+        if (!TestData.isInitialize) {
+            await TestData.initialize();
+        }
+
         let adminCaseList: ICase[] | null = null;
-        let caseList = TestData.caseList.filter(eachCase => 
-            eachCase.commentStatus == EnumCommentStatus.request);
-        if (caseList){
+        let caseList = TestData.caseList.filter(eachCase =>
+            eachCase.comment_status == Enumcomment_status.request);
+        if (caseList) {
             if (!adminCaseList) {
                 adminCaseList = caseList;
             }
         }
 
-        caseList = TestData.caseList.filter(eachCase => 
-            eachCase.commentStatus == EnumCommentStatus.response);
-        if (caseList){
+        caseList = TestData.caseList.filter(eachCase =>
+            eachCase.comment_status == Enumcomment_status.response);
+        if (caseList) {
             if (!adminCaseList) {
                 adminCaseList = caseList;
             } else {
@@ -139,8 +44,8 @@ export class TestData {
         }
 
         if (adminCaseList) {
-            for(let eachCase of adminCaseList) {
-                let commentList = TestData.commentList.filter (eachComment => eachComment.caseId == eachCase.id)
+            for (let eachCase of adminCaseList) {
+                let commentList = TestData.commentList.filter(eachComment => eachComment.case_id == eachCase.id)
                 if (commentList) {
                     eachCase.communication = commentList;
                 }
@@ -150,21 +55,25 @@ export class TestData {
         return adminCaseList;
     }
 
-    private static getUserCaseList (username: string): ICase[] | null {
+    private static async getUserCaseList(username: string): Promise<ICase[] | null> {
+        if (!TestData.isInitialize) {
+            await TestData.initialize();
+        }
+
         let userCaseList: ICase[] | null = null;
-        let caseList = TestData.caseList.filter(eachCase => 
-            eachCase.commentStatus == EnumCommentStatus.response &&
+        let caseList = TestData.caseList.filter(eachCase =>
+            eachCase.comment_status == Enumcomment_status.response &&
             eachCase.username == username);
-        if (caseList){
+        if (caseList) {
             if (!userCaseList) {
                 userCaseList = caseList;
             }
         }
 
-        caseList = TestData.caseList.filter(eachCase => 
-            eachCase.commentStatus == EnumCommentStatus.request &&
+        caseList = TestData.caseList.filter(eachCase =>
+            eachCase.comment_status == Enumcomment_status.request &&
             eachCase.username == username);
-        if (caseList){
+        if (caseList) {
             if (!userCaseList) {
                 userCaseList = caseList;
             } else {
@@ -173,67 +82,85 @@ export class TestData {
         }
 
         if (userCaseList) {
-            for(let eachCase of userCaseList) {
-                let commentList = TestData.commentList.filter (eachComment => eachComment.caseId == eachCase.id)
+            for (let eachCase of userCaseList) {
+                let commentList = TestData.commentList.filter(eachComment => eachComment.case_id == eachCase.id)
                 if (commentList) {
                     eachCase.communication = commentList;
                 }
             }
         }
-        
+
         return userCaseList;
     }
 
-    static getCaseList (username: string): ICase[]  | null{
+    static async getCaseList(username: string): Promise<ICase[] | null> {
         if (username.toLowerCase() == 'admin') {
-            return TestData.getAdminCaseList();
+            return await TestData.getAdminCaseList();
         } else {
-            return TestData.getUserCaseList(username);
+            return await TestData.getUserCaseList(username);
         }
     }
 
-    static getCaseDetail (caseId: number): ICase | null {
-        let caseInfo = TestData.caseList.find (eachCase => eachCase.id == caseId);
-        if (caseInfo) {
-            let caseComm = TestData.commentList.filter (eachComm=> eachComm.caseId == caseId);
-            caseInfo.communication = caseComm;
-            return caseInfo;
-        }
-        return null;
+    static getCaseDetail(case_id: number): Promise<ICase | null> {
+        return new Promise((resolve, reject) => {
+            let caseInfo = TestData.caseList.find(eachCase => eachCase.id == case_id);
+            if (caseInfo) {
+                let caseComm = TestData.commentList.filter(eachComm => eachComm.case_id == case_id);
+                caseInfo.communication = caseComm;
+                resolve(caseInfo);
+            }
+            reject();
+        });
     }
 
-    static addCase (username: string, caseInfo: ICase):ICase | null {
+    static async addCase(username: string, caseInfo: ICase): Promise<ICase | null> {
+        if (!TestData.isInitialize) {
+            await TestData.initialize();
+        }
+
         if (username != 'admin') {
             caseInfo.id = TestData.caseList.length;
             caseInfo.username = username;
             caseInfo.communication = [];
             //Save the case in database
-            TestData.caseList.push(caseInfo);
-            return caseInfo;
-        }else {
+            let insertedCaseInfo = await TestData.nazneenDB.addCase(caseInfo)
+            TestData.caseList.push(insertedCaseInfo);
+
+            return insertedCaseInfo;
+        } else {
             return null;
         }
     }
 
-    static addComment (username: string, 
-        caseComment: ICaseComment): ICase | null {
+    static async addComment(username: string,
+        caseComment: ICaseComment): Promise<ICase | null> {
+
+        if (!TestData.isInitialize) {
+            await TestData.initialize();
+        }
+
         caseComment.id = TestData.commentList.length;
         caseComment.username = username;
 
-        let caseInfo = TestData.caseList.find(eachCase => eachCase.id == caseComment.caseId);
+        let caseInfo = TestData.caseList.find(eachCase => eachCase.id == caseComment.case_id);
         if (caseInfo) {
             if (username == 'admin') {
-                caseInfo.commentStatus = EnumCommentStatus.response;
+                caseInfo.comment_status = Enumcomment_status.response;
             } else {
-                caseInfo.commentStatus = EnumCommentStatus.request;
+                caseInfo.comment_status = Enumcomment_status.request;
             }
+
             //Update the case in database
+            caseComment.case_id = caseInfo.id;
+            let insertedCaseCommentInfo = await TestData.nazneenDB.addCaseComment(caseComment)
+            TestData.commentList.push(insertedCaseCommentInfo);
+
             //Save the comment in database
-            caseInfo.communication?.push(caseComment);
-            TestData.commentList.push(caseComment);
+            caseInfo.communication?.push(insertedCaseCommentInfo);
+
 
             return caseInfo;
-        } else  {
+        } else {
             return null;
         }
     }

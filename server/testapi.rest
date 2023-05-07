@@ -1,0 +1,27 @@
+GET http://localhost:8000/caselist/admin
+
+###
+GET http://localhost:8000/casedetail/2
+
+###
+POST http://localhost:8000/addcase
+content-type: application/json
+
+{
+  "title": "This is my new case",
+  "date": "1/1/2023",
+  "description": "This is the new description",
+  "comment_status": 1,
+  "username": "test"
+}
+
+###
+POST http://localhost:8000/addcomment
+content-type: application/json
+
+{
+  "case_id": 27,
+  "date": "1/1/2023",
+  "username": "test",
+  "text": "this is the comments from the inserted text"
+}

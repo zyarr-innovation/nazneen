@@ -2,37 +2,40 @@
 
   <h1 align="center">My Case List</h1>
   <form [formGroup]="caseInfo" *ngIf="! isAdminUser()">
-        <mat-form-field class="title_info">
-            <mat-label>Title</mat-label>
-            <input matInput placeholder="Add Title" formControlName="title">
-            <div *ngIf="thisCaseInfo.title.touched && thisCaseInfo.title.invalid" class="alert alert-danger">
-              <div *ngIf="thisCaseInfo.title.errors?.required">Please enter title of case</div>
-            </div>
-        </mat-form-field >
-        <mat-form-field class="description_info">
-            <mat-label>Description</mat-label>
-            <input matInput placeholder="Add Description" formControlName="description">
-            <div *ngIf="thisCaseInfo.description.touched && thisCaseInfo.description.invalid" class="alert alert-danger">
-              <div *ngIf="thisCaseInfo.description.errors?.required">Please enter case Description</div>
-            </div>
-        </mat-form-field >
-        <button mat-raised-button color="primary" (click)="addCase ()" >Add Case</button>
+    <mat-form-field class="title_info">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Add Title" formControlName="title">
+      <div *ngIf="thisCaseInfo.title.touched && thisCaseInfo.title.invalid" class="alert alert-danger">
+        <div *ngIf="thisCaseInfo.title.errors?.required">Please enter title of case</div>
+      </div>
+    </mat-form-field>
+    <mat-form-field class="description_info">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Add Description" formControlName="description">
+      <div *ngIf="thisCaseInfo.description.touched && thisCaseInfo.description.invalid" class="alert alert-danger">
+        <div *ngIf="thisCaseInfo.description.errors?.required">Please enter case Description</div>
+      </div>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addCase ()">Add Case</button>
   </form>
 
-  <div class="main-div">
-    <div *ngFor="let eachCase of caseList; let elemIndex = index;">
-      <mat-card [style.background]="getBackgroundColor(eachCase)">
-        <mat-card-header>
-          <mat-card-title>{{eachCase.title}}</mat-card-title>
-          <mat-card-subtitle>{{eachCase.date  | date: 'MMMM d, y  h:mm'}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          {{eachCase.description}}
-        </mat-card-content>
-        <mat-card-actions align="end">
-          <button mat-raised-button color="primary" (click)="onDetail(eachCase.id)">Open</button>
-        </mat-card-actions>
-      </mat-card>
+  <div *ngIf="caseList$ | async as caseList">
+    <div class="main-div">
+
+      <div *ngFor="let eachCase of caseList; let elemIndex=index;">
+        <mat-card [style.background]="getBackgroundColor(eachCase)">
+          <mat-card-header>
+            <mat-card-title>{{eachCase.title}}</mat-card-title>
+            <mat-card-subtitle>{{eachCase.date | date: 'MMMM d, y h:mm'}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            {{eachCase.description}}
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <button mat-raised-button color="primary" (click)="onDetail(eachCase.id)">Open</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
     </div>
   </div>
 </div>
